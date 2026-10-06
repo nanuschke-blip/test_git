@@ -18,10 +18,17 @@ sensor_analyzer.py  —— 上一届学长留下的"能用"的脚本
 
 import csv
 import os
+import argparse
 
-INPUT_FILE = "sensor_data.csv"
-OUTPUT_FILE = "cleaned_data.csv"
-OUTPUT_DIR = "out"  # 输出目录
+def parse_args():
+    parser = argparse.ArgumentParser(description="传感器数据分析与清洗")
+    parser.add_argument("--input", default="sensor_data.csv", help="输入 CSV 文件路径")
+    parser.add_argument("--output", default="cleaned_data.csv", help="输出 CSV 文件路径")
+    return parser.parse_args()
+
+args = parse_args()
+INPUT_FILE = args.input
+OUTPUT_FILE = args.output
 
 data = []
 times = []
