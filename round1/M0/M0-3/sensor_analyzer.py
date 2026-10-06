@@ -30,14 +30,21 @@ times = []
 print("=== 传感器数据分析 ===")
 
 # --- 读取数据 ---
-reader = csv.DictReader(open(INPUT_FILE, "r"))
-
-for row in reader:
-    t = float(row["time"])
-    v = float(row["value"])
-    times.append(t)
-    data.append(v)
-
+try:
+    with open(INPUT_FILE, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                t = float(row["time"])
+                v = float(row["value"])
+            except (KeyError, ValueError):
+                print("错误: CSV 中缺少 time/value 列或存在非数值内容")
+                exit(1)
+            times.append(t)
+            data.append(v)
+except FileNotFoundError:
+    print("错误: 文件不存在: %s" % INPUT_FILE)
+    exit(1)
 print("共读取 %d 条数据" % len(data))
 
 # --- 计算平均值 ---
