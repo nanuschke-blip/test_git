@@ -25,7 +25,7 @@ OUTPUT_DIR = "out"  # 输出目录
 
 data = []
 times = []
-cleaned = []
+
 
 print("=== 传感器数据分析 ===")
 
@@ -72,5 +72,5 @@ for t, v in zip(cleaned_time, cleaned_value):
 
 print("均值 mean = %.4f" % mean)
 print("标准差 std = %.4f" % std)
-print("清洗后剩余 %d 条" % len(cleaned))
+print("清洗后剩余 %d 条" % len(cleaned_value))
 print("已保存到 %s" % output_path)
