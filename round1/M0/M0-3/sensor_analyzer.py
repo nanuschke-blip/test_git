@@ -26,65 +26,69 @@ def parse_args():
     parser.add_argument("--output", default="cleaned_data.csv", help="输出 CSV 文件路径")
     return parser.parse_args()
 
-args = parse_args()
-INPUT_FILE = args.input
-OUTPUT_FILE = args.output
+def main():
+    args = parse_args()
+    INPUT_FILE = args.input
+    OUTPUT_FILE = args.output
 
-data = []
-times = []
+    data = []
+    times = []
 
 
-print("=== 传感器数据分析 ===")
+    print("=== 传感器数据分析 ===")
 
 # --- 读取数据 ---
-try:
-    with open(INPUT_FILE, "r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            try:
-                t = float(row["time"])
-                v = float(row["value"])
-            except (KeyError, ValueError):
-                print("错误: CSV 中缺少 time/value 列或存在非数值内容")
-                exit(1)
-            times.append(t)
-            data.append(v)
-except FileNotFoundError:
-    print("错误: 文件不存在: %s" % INPUT_FILE)
-    exit(1)
-print("共读取 %d 条数据" % len(data))
+    try:
+        with open(INPUT_FILE, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    t = float(row["time"])
+                    v = float(row["value"])
+                except (KeyError, ValueError):
+                    print("错误: CSV 中缺少 time/value 列或存在非数值内容")
+                    exit(1)
+                times.append(t)
+                data.append(v)
+    except FileNotFoundError:
+        print("错误: 文件不存在: %s" % INPUT_FILE)
+        exit(1)
+    print("共读取 %d 条数据" % len(data))
 
 # --- 计算平均值 ---
-total = 0
-for v in data:
-    total += v
-mean = total / len(data)
+    total = 0
+    for v in data:
+        total += v
+    mean = total / len(data)
 
 # --- 计算标准差 ---
-acc = 0
-for v in data:
-    acc += (v - mean) ** 2
-std = (acc / len(data)) ** 0.5
+    acc = 0
+    for v in data:
+        acc += (v - mean) ** 2
+    std = (acc / len(data)) ** 0.5
 
 # --- 剔除离群值 ---
-cleaned_time = []
-cleaned_value = []
-for i in range(len(data)):
-    if abs(data[i] - mean) <= 2 * std:
-        cleaned_time.append(times[i])
-        cleaned_value.append(data[i])
+    cleaned_time = []
+    cleaned_value = []
+    for i in range(len(data)):
+        if abs(data[i] - mean) <= 2 * std:
+            cleaned_time.append(times[i])
+            cleaned_value.append(data[i])
 
 # --- 输出清洗后的数据 ---
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-output_path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
-f = open(output_path, "w")
-writer = csv.writer(f)
-writer.writerow(["time", "value"])
-for t, v in zip(cleaned_time, cleaned_value):
-    writer.writerow([t, v])
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    output_path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
+    f = open(output_path, "w")
+    writer = csv.writer(f)
+    writer.writerow(["time", "value"])
+    for t, v in zip(cleaned_time, cleaned_value):
+        writer.writerow([t, v])
 
 
-print("均值 mean = %.4f" % mean)
-print("标准差 std = %.4f" % std)
-print("清洗后剩余 %d 条" % len(cleaned_value))
-print("已保存到 %s" % output_path)
+    print("均值 mean = %.4f" % mean)
+    print("标准差 std = %.4f" % std)
+    print("清洗后剩余 %d 条" % len(cleaned_value))
+    print("已保存到 %s" % output_path)
+
+if __name__ == "__main__":
+    main()
