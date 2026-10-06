@@ -59,7 +59,25 @@ def load_xy(csv_path, col_x, col_y):
 
 def pearson(xs, ys):
     """计算皮尔逊相关系数，返回 (n, mean_x, mean_y, r)。"""
-    # 这里先留空，下一步再填
+    n = len(xs)
+
+    if n == 0:
+        raise ValueError("数据为空，无法计算相关系数")
+    if n != len(ys):
+        raise ValueError("x 和 y 的长度不一致")
+
+    mean_x = sum(xs) / n
+    mean_y = sum(ys) / n
+
+    dx = sum((x - mean_x) ** 2 for x in xs)
+    dy = sum((y - mean_y) ** 2 for y in ys)
+    prod = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys))
+
+    if dx == 0 or dy == 0:
+        raise ValueError("方差为 0，相关系数无定义")
+
+    r = prod / math.sqrt(dx * dy)
+    return n, mean_x, mean_y, r
     pass
 
 
