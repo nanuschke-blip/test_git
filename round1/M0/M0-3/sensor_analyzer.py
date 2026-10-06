@@ -53,9 +53,10 @@ for v in data:
 std = (acc / len(data)) ** 0.5
 
 # --- 剔除离群值 ---
+cleaned = []
 for v in data:
-    if v > mean + 2 * std:
-        data.remove(v)
+    if abs(v - mean) <= 2 * std:
+        cleaned.append(v)
 
 # --- 输出清洗后的数据 ---
 output_path = os.path.join("/", OUTPUT_DIR, OUTPUT_FILE)
