@@ -1,0 +1,52 @@
+    1  sudo apt update
+    2  sudo apt install open-vm-tools open-vm-tools-desktop -y
+    3  lsb_release -a
+    4  ping -c 3 baidu.com
+    5  sudo apt update && sudo apt install -y locales
+    6  sudo locale-gen en_US en_US.UTF-8
+    7  sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+    8  export LANG=en_US.UTF-8
+    9  sudo apt install -y software-properties-common curl gnupg lsb-release
+   10  sudo add-apt-repository -y universe
+   11  sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \ -o /user/share/keyrings/ros_archive-keyring.gpg
+   12  echo "deb [arch=$(dpkg --print-architecture) signed-by=/user/share/keyrings/ros-archive-keyring.gpg] https://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/nu11
+   13  sudo apt update
+   14  sudo apt install -y ros-humble-desktop
+   15  sudo curl -sSL https://mirrors.tuna.tsinghua.edu.cn/rosdistro/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+   16  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+   17  sudo apt update 
+   18  sudo apt install -y ros-humble-desktop
+   19  echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+   20  source ~/.bashrc 
+   21  ros2 run demo_nodes_cpp talker 
+   22  sudo snap install code --classic 
+   23  git --version
+   24  sudo apt install -y git
+   25  git config --global user.name "nanuschke-blip"
+   26  git config --global user.email "nanuschke@googlemail.com" 
+   27  git config --global --list 
+   28  git config --global user.email "314140205+nanuschke-blip@users.noreply.github.com" 
+   29  git config --global --list 
+   30  ssh-keygen -t ed25519 -C "314140205+nanuschke-blip@users.noreply.github.com" 
+   31  cat ~/.ssh/id_ed25519.pub 
+   32  ssh -T git@github.com 
+   33  mkdir -p ~/test_git
+   34  cd ~/test_git
+   35  git init 
+   36  echo "# Git Test" > README.md 
+   37  git add README.md
+   38  git commit -m "first commit: test git"
+   39  git log --pretty=format:"%h %an %ae %s" 
+   40  git remote add origin git@github.com:nanuschke-blip/test_git.git
+   41  git branch -M main
+   42  git push -u origin main 
+   43  cd ~/test_git
+   44  code M0-1_环境搭建排障笔记.md 
+   45  sudo apt install -y python3-colcon-common-extensions python3-pip 
+   46  pip3 install numpy opencv-python 
+   47  cd ~/test_git
+   48  mkdir -p docs/notes
+   49  mv M0-1_环境搭建排障笔记.md docs/notes/ 
+   50  sudo apt update
+   51  sudo apt install -y fcitx5 fcitx5-chinese-addons 
+   52  history > ~/test_git/docs/notes/terminal_history.txt 
