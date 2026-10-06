@@ -18,13 +18,13 @@ import yaml
 def load_config(config_path):
     """读取 YAML 配置文件，返回配置字典。"""
     try:
-            with open(config_path, "r", encoding="utf-8") as f:
+        with open(config_path, "r", encoding="utf-8") as f:
                 cfg = yaml.safe_load(f)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"配置文件不存在: {config_path}")
-        except yaml.YAMLError as e:
-            raise ValueError(f"YAML 解析失败: {e}")
-        return cfg
+    except FileNotFoundError:
+        raise FileNotFoundError(f"配置文件不存在: {config_path}")
+    except yaml.YAMLError as e:
+        raise ValueError(f"YAML 解析失败: {e}")
+    return cfg
     pass
 
 
@@ -33,7 +33,7 @@ def load_xy(csv_path, col_x, col_y):
     xs = []
     ys = []
     try:
-        with open(csv_path, "r", encoding= "utf-8") as f
+        with open(csv_path, "r", encoding= "utf-8") as f:
             reader = csv.DictReader(f)
             if reader.fieldnames is None:
                  raise ValueError("CSV 文件为空或没有表头")
@@ -43,7 +43,7 @@ def load_xy(csv_path, col_x, col_y):
                  raise ValueError(f"CSV 中缺少列: {col_y}")
 
             for row in reader:
-                 try:
+                try:
                     xs.append(float(row[col_x]))
                     ys.append(float(row[col_y]))
                 except (ValueError, TypeError):
@@ -87,8 +87,28 @@ def main():
     parser.add_argument("--config", required=True, help="配置文件路径")
     args = parser.parse_args()
 
-    print("程序入口已跑通，等待填入具体逻辑")
-    print("配置文件路径:", args.config)
+    try:
+        cfg = load_config(args.config)
+        csv_path = cfg["input_csv"]
+        col_x = cfg["columns"]["x"]
+        col_y = cfg["columns"]["y"]
+
+        # 如果 csv_path 是相对路径，相对于 config.yaml 所在目录解析
+        config_dir = Path(args.config).resolve().parent
+        if not Path(csv_path).is_absolute():
+            csv_path = (config_dir / csv_path).resolve()
+
+        xs, ys = load_xy(str(csv_path), col_x, col_y)
+        n, mean_x, mean_y, r = pearson(xs, ys)
+
+        print(f"n = {n}")
+        print(f"mean_x = {mean_x}")
+        print(f"mean_y = {mean_y}")
+        print(f"r = {r}")
+
+    except Exception as e:
+        print(f"错误: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
