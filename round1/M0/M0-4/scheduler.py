@@ -188,6 +188,17 @@ def main():
         sys.exit(1)
 
     tasks = {t["name"]: t for t in tasks_list}
+
+    for name, task in tasks.items():
+            sr = task.get("success_rate", 1.0)
+            if not (0 <= sr <= 1):
+                print(f"错误: 任务 {name} 的 success_rate 越界: {sr}", file=sys.stderr)
+                sys.exit(1)
+            d = task.get("duration", 0)
+            if not isinstance(d, (int, float)) or d < 0:
+                print(f"错误: 任务 {name} 的 duration 非法: {d}", file=sys.stderr)
+                sys.exit(1)
+
     try:
         order = topological_sort(tasks)
     except Exception as e:
