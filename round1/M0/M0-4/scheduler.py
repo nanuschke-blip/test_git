@@ -10,6 +10,23 @@ from pathlib import Path
 
 import yaml
 
+COLORS = {
+    "SUCCESS": "\033[92m",  # 绿色
+    "FAILED":  "\033[91m",  # 红色
+    "RETRY":   "\033[93m",  # 黄色
+    "SKIPPED": "\033[94m",  # 蓝色
+    "TIMEOUT": "\033[95m",  # 洋红
+    "RESET":   "\033[0m",
+}
+
+USE_COLOR = sys.stdout.isatty()
+
+
+def colored(status, text):
+    """给状态文本加上颜色（非 TTY 环境自动降级）。"""
+    if not USE_COLOR:
+        return text
+    return f"{COLORS.get(status, '')}{text}{COLORS['RESET']}"
 
 def load_config(path):
     """读取 YAML 或 JSON 配置文件，返回配置字典。"""
@@ -94,7 +111,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
                         "attempts": 0,
                         "duration": 0.0,
                     }
-                    print(f"[TIMEOUT] {remaining}")
+                    print(colored("TIMEOUT", f"[TIMEOUT] {remaining}"))
             break
 
         task = tasks[name]
@@ -108,7 +125,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
                 "attempts": 0,
                 "duration": 0.0,
             }
-            print(f"[SKIPPED] {name}")
+            print(colored("SKIPPED", f"[SKIPPED] {name}"))
             continue
 
         success = False
@@ -121,7 +138,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
                 success = True
                 break
             else:
-                print(f"[RETRY] {name} 第 {attempt} 次失败")
+                print(colored("RETRY", f"[RETRY] {name} 第 {attempt} 次失败"))
         elapsed = time.time() - task_start
 
         if success:
@@ -132,7 +149,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
                 "attempts": attempts,
                 "duration": round(elapsed, 2),
             }
-            print(f"[SUCCESS] {name}")
+            print(colored("SUCCESS", f"[SUCCESS] {name}"))
         else:
             status_map[name] = "FAILED"
             records[name] = {
@@ -141,7 +158,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
                 "attempts": attempts,
                 "duration": round(elapsed, 2),
             }
-            print(f"[FAILED] {name}")
+            print(colored("FAILED", f"[FAILED] {name}"))
 
     return records, timed_out
 
@@ -190,6 +207,17 @@ def main():
     total_duration = time.time() - start_time
     print(f"\n总耗时: {total_duration:.2f}s")
     print(f"是否超时: {timed_out}")
+        
+    report = {
+        "timeout": timed_out,
+        "total_duration": round(total_duration, 2),
+        "tasks": [records[name] for name in order if name in records],
+    }
+
+    with open(args.report, "w", encoding="utf-8") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+
+    print(f"\n报告已保存到: {args.report}")
 
 
 if __name__ == "__main__":
