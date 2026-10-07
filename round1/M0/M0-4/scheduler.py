@@ -29,6 +29,103 @@ def load_config(path):
         raise ValueError("配置文件内容必须是一个字典")
     return cfg
 
+from collections import deque
+
+
+def topological_sort(tasks):
+    """按依赖关系对任务做拓扑排序，返回执行顺序列表。
+
+    tasks: {name: {"duration": ..., "success_rate": ..., "dependencies": [...]}}
+    返回: [name1, name2, ...]
+    异常: 依赖不存在 / 存在环
+    """
+    # 1. 校验依赖是否存在
+    for name, task in tasks.items():
+        for dep in task.get("dependencies", []):
+            if dep not in tasks:
+                raise ValueError(f"任务 {name} 依赖了不存在的任务: {dep}")
+
+    # 2. 计算入度
+    indegree = {name: 0 for name in tasks}
+    for name, task in tasks.items():
+        for dep in task.get("dependencies", []):
+            indegree[name] += 1
+
+    # 3. 入度为 0 的入队
+    queue = deque([name for name, deg in indegree.items() if deg == 0])
+    order = []
+
+    # 4. BFS
+    while queue:
+        name = queue.popleft()
+        order.append(name)
+        for other, task in tasks.items():
+            if name in task.get("dependencies", []):
+                indegree[other] -= 1
+                if indegree[other] == 0:
+                    queue.append(other)
+
+    # 5. 环检测
+    if len(order) != len(tasks):
+        raise ValueError("任务依赖存在环，无法排序")
+
+    return order
+
+def run_tasks(tasks, order):
+    """按顺序执行任务，处理重试与下游跳过，返回状态记录。"""
+    status_map = {}
+    records = {}
+
+    for name in order:
+        task = tasks[name]
+        deps = task.get("dependencies", [])
+
+        # 检查依赖是否都成功
+        if not all(status_map.get(dep) == "SUCCESS" for dep in deps):
+            status_map[name] = "SKIPPED"
+            records[name] = {
+                "name": name,
+                "status": "SKIPPED",
+                "attempts": 0,
+                "duration": 0.0,
+            }
+            print(f"[SKIPPED] {name}")
+            continue
+
+        # 尝试执行，最多 3 次
+        success = False
+        attempts = 0
+        start = time.time()
+        for attempt in range(1, 4):
+            attempts = attempt
+            time.sleep(task.get("duration", 0))
+            if random.random() < task.get("success_rate", 1.0):
+                success = True
+                break
+            else:
+                print(f"[RETRY] {name} 第 {attempt} 次失败")
+        elapsed = time.time() - start
+
+        if success:
+            status_map[name] = "SUCCESS"
+            records[name] = {
+                "name": name,
+                "status": "SUCCESS",
+                "attempts": attempts,
+                "duration": round(elapsed, 2),
+            }
+            print(f"[SUCCESS] {name}")
+        else:
+            status_map[name] = "FAILED"
+            records[name] = {
+                "name": name,
+                "status": "FAILED",
+                "attempts": attempts,
+                "duration": round(elapsed, 2),
+            }
+            print(f"[FAILED] {name}")
+
+    return records
 
 def main():
     parser = argparse.ArgumentParser(description="任务调度模拟器")
@@ -49,6 +146,23 @@ def main():
 
     print("配置加载成功，任务数:", len(cfg.get("tasks", [])))
     # TODO: 下一步实现拓扑排序、执行、报告
+
+    tasks_list = cfg.get("tasks", [])
+    if not tasks_list:
+        print("错误: 配置中没有任务", file=sys.stderr)
+        sys.exit(1)
+
+    tasks = {t["name"]: t for t in tasks_list}
+    try:
+        order = topological_sort(tasks)
+    except Exception as e:
+        print(f"错误: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    print("拓扑排序结果:", " -> ".join(order))
+
+    records = run_tasks(tasks, order)
+    print("\n执行完成。")
 
 
 if __name__ == "__main__":
