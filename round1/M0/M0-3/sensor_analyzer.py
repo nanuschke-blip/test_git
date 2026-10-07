@@ -26,6 +26,8 @@ def parse_args():
     parser.add_argument("--output", default="cleaned_data.csv", help="输出 CSV 文件路径")
     return parser.parse_args()
 
+OUTPUT_DIR = "out"
+
 def main():
     args = parse_args()
     INPUT_FILE = args.input
