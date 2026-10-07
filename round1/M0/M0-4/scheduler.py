@@ -71,16 +71,35 @@ def topological_sort(tasks):
 
     return order
 
-def run_tasks(tasks, order):
-    """按顺序执行任务，处理重试与下游跳过，返回状态记录。"""
+def run_tasks(tasks, order, timeout=None, start_time=None):
+    """按顺序执行任务，处理重试、下游跳过与超时控制。"""
+    if start_time is None:
+        start_time = time.time()
+
     status_map = {}
     records = {}
+    timed_out = False
 
     for name in order:
+        # 超时检查
+        if timeout is not None and (time.time() - start_time) > timeout:
+            timed_out = True
+            # 当前及后续任务全部标记 TIMEOUT
+            for remaining in order[order.index(name):]:
+                if remaining not in status_map:
+                    status_map[remaining] = "TIMEOUT"
+                    records[remaining] = {
+                        "name": remaining,
+                        "status": "TIMEOUT",
+                        "attempts": 0,
+                        "duration": 0.0,
+                    }
+                    print(f"[TIMEOUT] {remaining}")
+            break
+
         task = tasks[name]
         deps = task.get("dependencies", [])
 
-        # 检查依赖是否都成功
         if not all(status_map.get(dep) == "SUCCESS" for dep in deps):
             status_map[name] = "SKIPPED"
             records[name] = {
@@ -92,10 +111,9 @@ def run_tasks(tasks, order):
             print(f"[SKIPPED] {name}")
             continue
 
-        # 尝试执行，最多 3 次
         success = False
         attempts = 0
-        start = time.time()
+        task_start = time.time()
         for attempt in range(1, 4):
             attempts = attempt
             time.sleep(task.get("duration", 0))
@@ -104,7 +122,7 @@ def run_tasks(tasks, order):
                 break
             else:
                 print(f"[RETRY] {name} 第 {attempt} 次失败")
-        elapsed = time.time() - start
+        elapsed = time.time() - task_start
 
         if success:
             status_map[name] = "SUCCESS"
@@ -125,7 +143,7 @@ def run_tasks(tasks, order):
             }
             print(f"[FAILED] {name}")
 
-    return records
+    return records, timed_out
 
 def main():
     parser = argparse.ArgumentParser(description="任务调度模拟器")
@@ -161,8 +179,17 @@ def main():
 
     print("拓扑排序结果:", " -> ".join(order))
 
-    records = run_tasks(tasks, order)
-    print("\n执行完成。")
+    start_time = time.time()
+
+    try:
+        records, timed_out = run_tasks(tasks, order, timeout=args.timeout, start_time=start_time)
+    except Exception as e:
+        print(f"错误: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    total_duration = time.time() - start_time
+    print(f"\n总耗时: {total_duration:.2f}s")
+    print(f"是否超时: {timed_out}")
 
 
 if __name__ == "__main__":
