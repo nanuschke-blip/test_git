@@ -129,6 +129,37 @@ M0-1 README
 - VS Code 已安装并配好 Python、C/C++、ROS 插件。
 - Git 已配置 `user.name` / `user.email`。
 - `check_env.sh` 跑通，输出 `FAIL=0`。
-- 已从 Windows 宿主机成功 SSH 远程登录 Ubuntu。
+- 已从 Windows 宿主机成功 SSH 远程登录 Ubuntu（'ssh car@192.168.98.128`）。
+
+### check_env.sh 运行结果
+- e1205e2 (HEAD -> main, origin/main) docs: 完善 M0-1 踩坑实录，补充定位过程与参考资料
+  8aca6c8 docs: M0-4 完成异常处理与 README，report.json 已生成
+  8f60332 feat: M0-4 阶段5 实现彩色输出与 report.json 生成
+  1c2f334 feat: M0-4 阶段4 实现全局超时控制
+  607cbf3 feat: M0-4 阶段3 实现任务执行、失败重试与下游跳过
+  65f8b8e feat: M0-4 阶段1 完成配置加载与命令行参数解析
+  6ffd0e0 docs: 补充 M0-3 问题报告，完善脚本
+  e1fe910 feat: 添加 M0-3 清洗后数据 cleaned_data.csv
+  7e18b85 docs: 按官方要求补全 M0-1 README，整理踩坑实录与环境说明
+  5e86a17 test: M0-1 环境验收脚本跑通，FAIL=0
+  
+## 环境选型说明
+
+选择 VMware 虚拟机而非 WSL2，原因：
+- M2 视觉开发需要图形界面和相机直通，虚拟机支持更完整。
+- WSL2 对 USB 设备支持较弱，不利于后续视觉任务。
+
+代价：
+- 虚拟机占用更多内存和磁盘。
+- 性能略低于物理机。
+
+
+
+
+## 六、如何复现
+
+- ```bash
+  cd round1/M0/M0-1
+  bash check_env.sh
 
 	
