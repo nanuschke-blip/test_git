@@ -94,6 +94,7 @@ M0-1 README
 - **定位过程**：终端报错 Temporary failure in name resolution，判断是网络服务未重连。
 - **原因**：挂起恢复后网络服务未自动重连。
 - **解决**：执行 `sudo systemctl restart NetworkManager`，网络恢复后即可正常推送。
+- **意外情况**：如果使用 `sudo systemctl restart NetworkManager`依旧无法正常连接网络，则打开Windows的cmd,输入services.msc，打开服务窗口，然后找到VMware NAT Service点击左上角启动即可。
 
 - 经验4：在退出虚拟机前，可以点开上侧菜单栏里的虚拟机找到快照并点击拍摄快照可保存当前虚拟机的状态。
 
