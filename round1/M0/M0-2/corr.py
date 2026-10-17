@@ -14,19 +14,21 @@ from pathlib import Path
 
 import yaml
 
-
 def load_config(config_path):
     """读取 YAML 配置文件，返回配置字典。"""
     try:
+    """ "r"是只读的意思，encoding 将字典提取的内容转成utf-8码，防止中文乱码 """
         with open(config_path, "r", encoding="utf-8") as f:
-                cfg = yaml.safe_load(f)
+	    cfg = yaml.safe_load(f)
     except FileNotFoundError:
         raise FileNotFoundError(f"配置文件不存在: {config_path}")
     except yaml.YAMLError as e:
         raise ValueError(f"YAML 解析失败: {e}")
+        
+    if not isinstance(cfg, dict):
+        raise ValueError("配置文件内容必须是一个字典")
+        
     return cfg
-    pass
-
 
 def load_xy(csv_path, col_x, col_y):
     """从 CSV 文件读取两列数据，返回 (xs, ys)。"""
@@ -54,9 +56,6 @@ def load_xy(csv_path, col_x, col_y):
     
     return xs, ys
 
-    pass
-
-
 def pearson(xs, ys):
     """计算皮尔逊相关系数，返回 (n, mean_x, mean_y, r)。"""
     n = len(xs)
@@ -78,8 +77,6 @@ def pearson(xs, ys):
 
     r = prod / math.sqrt(dx * dy)
     return n, mean_x, mean_y, r
-    pass
-
 
 def main():
     """主函数：解析命令行参数，读取配置，计算并打印结果。"""
@@ -89,11 +86,11 @@ def main():
 
     try:
         cfg = load_config(args.config)
+        """ cfg["input_csv"] 是相对路径，会相对于 config.yaml 所在目录解析 """
         csv_path = cfg["input_csv"]
         col_x = cfg["columns"]["x"]
         col_y = cfg["columns"]["y"]
 
-        # 如果 csv_path 是相对路径，相对于 config.yaml 所在目录解析
         config_dir = Path(args.config).resolve().parent
         if not Path(csv_path).is_absolute():
             csv_path = (config_dir / csv_path).resolve()
