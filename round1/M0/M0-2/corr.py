@@ -24,7 +24,7 @@ def load_config(config_path):
         raise FileNotFoundError(f"配置文件不存在: {config_path}")
     except yaml.YAMLError as e:
         raise ValueError(f"YAML 解析失败: {e}")
-        
+    """若文件翻译出来的内容不是字典，进行优雅报错。"""
     if not isinstance(cfg, dict):
         raise ValueError("配置文件内容必须是一个字典")
         
@@ -46,6 +46,7 @@ def load_xy(csv_path, col_x, col_y):
 
             for row in reader:
                 try:
+                """依次将对应数据按序填入列表。"""
                     xs.append(float(row[col_x]))
                     ys.append(float(row[col_y]))
                 except (ValueError, TypeError):
@@ -64,7 +65,7 @@ def pearson(xs, ys):
         raise ValueError("数据为空，无法计算相关系数")
     if n != len(ys):
         raise ValueError("x 和 y 的长度不一致")
-
+    """计算平均值。"""
     mean_x = sum(xs) / n
     mean_y = sum(ys) / n
 
@@ -74,28 +75,33 @@ def pearson(xs, ys):
 
     if dx == 0 or dy == 0:
         raise ValueError("方差为 0，相关系数无定义")
-
+        
+    """math.sqrt()是开平方根的作用。"""
     r = prod / math.sqrt(dx * dy)
     return n, mean_x, mean_y, r
 
 def main():
     """主函数：解析命令行参数，读取配置，计算并打印结果。"""
+    
+    """配置解析器，于终端指令直接获取文件内容。"""
     parser = argparse.ArgumentParser(description="计算两列数据的相关系数")
     parser.add_argument("--config", required=True, help="配置文件路径")
     args = parser.parse_args()
 
     try:
         cfg = load_config(args.config)
-        """ cfg["input_csv"] 是相对路径，会相对于 config.yaml 所在目录解析 """
         csv_path = cfg["input_csv"]
         col_x = cfg["columns"]["x"]
         col_y = cfg["columns"]["y"]
-
+        
+	""" 相对路径处理，拼凑成电脑可识别的完整路径 """
         config_dir = Path(args.config).resolve().parent
         if not Path(csv_path).is_absolute():
             csv_path = (config_dir / csv_path).resolve()
 
         xs, ys = load_xy(str(csv_path), col_x, col_y)
+        
+        """这里n,mean_x,mean_y,r接的顺序必须和 return 的顺序一模一样。"""
         n, mean_x, mean_y, r = pearson(xs, ys)
 
         print(f"n = {n}")
