@@ -30,6 +30,13 @@ M0-1 README
 - 已生成 SSH 公钥并添加到 GitHub
 - 已从 Windows 宿主机成功远程登录 Ubuntu
 
+- **实现步骤**： 
+	1.`ssh-keygen -t ed25519`，一路回车
+  	2.把公钥追加到授权文件里：`cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys`
+	3.给文件设置正确的权限（权限太大 SSH 会拒绝使用）：`chmod 700 ~/.ssh `
+                                                        `chmod 600 ~/.ssh/authorized_keys` 
+	4.终端输入：`grep "amdi2025" ~/.ssh/authorized_keys > /tmp/mykey && cat /tmp/mykey > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys`
+	5.Windows的cmd输入：`ssh -i 2025214042 car@192.168.98.128`，即可实现免密登录到虚拟机
 ## 三、踩坑实录
 
 ### 问题 1：Broadcom账号收不到验证码
@@ -125,12 +132,18 @@ M0-1 README
 
 ## 五、完成判断
 
+## 五、完成判断
+
 - Ubuntu 22.04 已安装，ROS2 Humble 已安装并验证 talker/listener 正常收发。
 - Python 虚拟环境 `.venv` 已创建，`uv` 已安装。
 - VS Code 已安装并配好 Python、C/C++、ROS 插件。
 - Git 已配置 `user.name` / `user.email`。
 - `check_env.sh` 跑通，输出 `FAIL=0`。
-- 已从 Windows 宿主机成功 SSH 远程登录 Ubuntu（'ssh car@192.168.98.128`）。
+- **已从 Windows 宿主机成功 SSH 远程登录 Ubuntu。**
+- **已配置 SSH Key 免密登录**（清理了干扰公钥，修复了 `~/.ssh` 权限，Windows 端使用 `ssh -i <私钥名>` 验证成功）。
+- **文件传输验证成功**：在 Windows 生成 `test.txt`，使用 `scp test.txt car@IP:~/` 成功推送至 Ubuntu。
+
+（'ssh car@192.168.98.128`）。
 
 ### check_env.sh 运行结果
 - e1205e2 (HEAD -> main, origin/main) docs: 完善 M0-1 踩坑实录，补充定位过程与参考资料
