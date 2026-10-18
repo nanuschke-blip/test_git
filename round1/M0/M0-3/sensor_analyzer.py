@@ -80,11 +80,11 @@ def main():
 # --- 输出清洗后的数据 ---
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     output_path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
-    f = open(output_path, "w")
-    writer = csv.writer(f)
-    writer.writerow(["time", "value"])
-    for t, v in zip(cleaned_time, cleaned_value):
-        writer.writerow([t, v])
+    with open(output_path, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["time", "value"])
+        for t, v in zip(cleaned_time, cleaned_value):
+            writer.writerow([t, v])
 
 
     print("均值 mean = %.4f" % mean)
