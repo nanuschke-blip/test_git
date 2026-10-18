@@ -73,6 +73,9 @@ def topological_sort(tasks):
     order = []
 
     # 4. BFS
+    """当quene里有任务时执行，取出quene中最前面的那个任务，放进order里面，然后检查与该任务有关联的other任务，
+    并将other任务的入度减1,直至other任务入度为0时计入quene队列
+    """
     while queue:
         name = queue.popleft()
         order.append(name)
@@ -117,6 +120,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
         task = tasks[name]
         deps = task.get("dependencies", [])
 
+        """查依赖，决定是否跳过，并检查前置任务是否全部成功"""
         if not all(status_map.get(dep) == "SUCCESS" for dep in deps):
             status_map[name] = "SKIPPED"
             records[name] = {
@@ -133,7 +137,7 @@ def run_tasks(tasks, order, timeout=None, start_time=None):
         task_start = time.time()
         for attempt in range(1, 4):
             attempts = attempt
-            time.sleep(task.get("duration", 0))
+            time.sleep(task.get("duration", 0)) #模拟干活，现场卡2.5秒
             if random.random() < task.get("success_rate", 1.0):
                 success = True
                 break
@@ -187,6 +191,7 @@ def main():
         print("错误: 配置中没有任务", file=sys.stderr)
         sys.exit(1)
 
+    """将列表转成字典方便后续的操作"""
     tasks = {t["name"]: t for t in tasks_list}
 
     for name, task in tasks.items():
