@@ -4,7 +4,7 @@
 
 ## 🛠️ 依赖环境
 在运行代码前，请确保已安装 Python 3.10+ 及以下依赖库：
-```bash
+bash
 pip install opencv-python numpy pyyaml
 
 ## 🚀 一键运行指南
@@ -15,7 +15,7 @@ pip install opencv-python numpy pyyaml
 
 确保 `calib_imgs` 文件夹中有 15 张以上的棋盘格照片。运行以下命令进行标定，并生成符合规范的 yaml 文件：
 
-```bash
+bash
 python3 calib.py -i calib_imgs/ -o camera_calibration.yaml
 (注：脚本内部已设定实测棋盘格单个方格物理边长为 24.0 mm，与实际打印尺寸严格对齐)
 
@@ -24,21 +24,21 @@ python3 calib.py -i calib_imgs/ -o camera_calibration.yaml
 
 模式 A：摄像头实时检测
 
-```bash
+bash
 python3 detect.py -c camera_calibration.yaml -s
 (运行后按 q 键退出)
 
 模式 B：单张图片检测
 
-```bash
+bash
 python3 detect.py -i test.jpg -c camera_calibration.yaml -s
 模式 C：视频文件检测
 
-```bash
+bash
 python3 detect.py -v test_video.mp4 -c camera_calibration.yaml
 
 
-💡 核心算法管线与原理说明
+## 💡 核心算法管线与原理说明
 检测模块严格遵循传统视觉的经典流水线，顺序不可颠倒，每一步均包含特定的工程目的：
 
 采图：获取 BGR 原始图像。
@@ -54,7 +54,7 @@ python3 detect.py -v test_video.mp4 -c camera_calibration.yaml
 状态判定与外接圆：利用 cv2.minEnclosingCircle 拟合最小外接圆。当多掩码命中时，按红>黄>绿的优先级及面积最大原则取主目标；若全未命中，则输出“未识别”，保证程序不崩。
 
 
-📂 交付物目录结构
+## 📂 交付物目录结构
 text
 M2-1/
 ├── camera_calibration.yaml  # 标定结果（包含内参、畸变、分辨率、RMSE）
@@ -70,7 +70,7 @@ M2-1/
 └── README.md                # 本运行说明文档
 
 
-🎤 现场答辩预设问题与满分回答（Q&A）
+## 🎤 预设问题与回答（Q&A）
 Q1：你的相机标定结果怎么样？怎么证明是准的？
 答：我的标定重投影误差（RMSE）达到了 0.0807 px。这是评估标定是否可信的唯一客观指标。误差低于 0.1 像素说明内参矩阵解算极其精准。我的 fx 与 fy 数值非常接近，畸变系数 k1 量级在合理范围内，说明角点检测没有出现问题。
 

@@ -1,0 +1,24 @@
+camera:
+  model: pinhole
+  resolution:
+  - 1920
+  - 1080
+  intrinsics:
+    fx: 1221.1068106971093
+    fy: 1223.0900127115578
+    cx: 941.6772397949045
+    cy: 547.3668759597118
+  distortion:
+    k1: -0.014113386509084197
+    k2: 0.13250641574937058
+    p1: -3.7389509565477105e-05
+    p2: -0.0013290174110749773
+    k3: -0.2594772476921866
+  reprojection_error: 0.08069842332351833
+  calib_board:
+    type: chessboard
+    inner_corners:
+    - 9
+    - 6
+    square_size_mm: 24.0
+    images_used: 15

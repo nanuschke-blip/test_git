@@ -56,6 +56,10 @@ def main():
         print("错误: 文件不存在: %s" % INPUT_FILE)
         exit(1)
     print("共读取 %d 条数据" % len(data))
+    
+    if len(data) == 0:
+        print("错误: 读取的数据为空，无法计算。")
+        exit(1)
 
 # --- 计算平均值 ---
     total = 0
