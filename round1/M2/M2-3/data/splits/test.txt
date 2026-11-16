@@ -1,0 +1,7 @@
+data/images/cup_05.jpg
+data/images/cup_06.jpg
+data/images/cup_08.jpg
+data/images/phone_10.jpg
+data/images/bottle_02.jpg
+data/images/bottle_08.jpg
+data/images/phone_03.jpg

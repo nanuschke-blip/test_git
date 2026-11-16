@@ -1,0 +1,12 @@
+data/images/phone_11.jpg
+data/images/tissue_10.jpg
+data/images/bottle_03.jpg
+data/images/pen_01.jpg
+data/images/pen_11.jpg
+data/images/bottle_06.jpg
+data/images/pen_08.jpg
+data/images/tissue_04.jpg
+data/images/phone_06.jpg
+data/images/bottle_07.jpg
+data/images/tissue_09.jpg
+data/images/bottle_09.jpg
