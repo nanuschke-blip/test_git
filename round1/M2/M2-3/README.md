@@ -7,10 +7,13 @@
 在运行代码前，请确保已安装以下依赖库：
 
 ```bash
+
 pip install ultralytics onnx onnxruntime opencv-python numpy matplotlib
 ```
 
+
 ## 📂 目录结构说明
+```text
 
 M2-3/
 ├── data/
@@ -49,49 +52,73 @@ M2-3/
 ├── README.md                  # 本说明文档
 ├── train.py                   # 一键启动 YOLOv8n 训练
 └── yolov8n.pt                 # 官方预训练权重（用于迁移学习）
+```
+
 
 ## 🚀 一键复现指南
 
 1. 数据准备与划分
 (注：数据增强与划分结果已存放在 data/ 目录中，如需重新生成可运行以下脚本)
 
-bash
+```bash
+
 python make_splits.py
+```
+
 
 2. 模型训练
 使用官方 yolov8n.pt 预训练权重进行 10 个 Epoch 的迁移学习：
 
-bash
+```bash
+
 python train.py
+```
+
 
 3. 模型评估
 在验证集上计算 mAP 和混淆矩阵：
 
-bash
+```bash
+
 python eval.py
 (详细指标与归因分析请查阅 docs/eval.md)
+```
+
 
 4. 导出 ONNX
 将训练好的 best.pt 导出为可在 CPU 端运行的 best.onnx：
 
-bash
+```bash
+
 python export_onnx.py
+```
+
 
 5. 性能与一致性测试
 测试 CPU 推理速度：
 
-bash
+```bash
+
 python benchmark.py
+```
+
+
 验证 PyTorch 与 ONNX 输出一致性（要求 max|Δbox| < 1e-3）：
 
-bash
+```bash
+
 python check_final_consistency.py
+```
+
 
 6. CPU 实时推理
 读取摄像头或视频流，进行实时检测展示：
 
-bash
+```bash
+
 python deploy_cpu.py
+```
+
 
 ## 📊 核心指标摘要（真实实测数据）
 模型结构：YOLOv8n (参数量极小，极适合 CPU 部署)
