@@ -1,0 +1,25 @@
+algorithm,metric,value,unit,note
+kalman,ids_created,15,count,total track IDs allocated over the clip (lower is better)
+kalman,id_switch_events,5,count,new ID born on the last box of a recently dead same-class track
+kalman,identity_steal_events,0,count,one track matched detections of two different objects (ID continuity faked by locking onto another target)
+kalman,duplicate_track_pairs,6,count,frame-pairs where two live tracks overlap IoU>0.8 (6 frames)
+kalman,occlusion_kept,67,count,gaps where the same ID re-acquired the object (of 68)
+kalman,occlusion_keep_rate,0.9853,ratio,"kept / gaps, gap length 1-15 frames"
+kalman,occlusion_keep_rate_le10,1.0,ratio,subset with gap length <= 10 (i.e. within max_age)
+kalman,jitter_rms_px,3.486,px,high-frequency box centre jitter vs 15-frame moving average (6 tracks)
+kalman,static_jitter_px,0.83,px,centre RMS on near-static targets (2 tracks)
+kalman,static_step_mean_px,0.275,px,mean frame-to-frame centre displacement on static targets
+kalman,static_step_var_px2,0.03,px^2,variance of frame-to-frame centre displacement on static targets
+kalman,center_error_px,1.239,px,mean |output center - detection center| on updated frames
+iou_only,ids_created,17,count,total track IDs allocated over the clip (lower is better)
+iou_only,id_switch_events,5,count,new ID born on the last box of a recently dead same-class track
+iou_only,identity_steal_events,0,count,one track matched detections of two different objects (ID continuity faked by locking onto another target)
+iou_only,duplicate_track_pairs,25,count,frame-pairs where two live tracks overlap IoU>0.8 (25 frames)
+iou_only,occlusion_kept,67,count,gaps where the same ID re-acquired the object (of 68)
+iou_only,occlusion_keep_rate,0.9853,ratio,"kept / gaps, gap length 1-15 frames"
+iou_only,occlusion_keep_rate_le10,1.0,ratio,subset with gap length <= 10 (i.e. within max_age)
+iou_only,jitter_rms_px,3.649,px,high-frequency box centre jitter vs 15-frame moving average (7 tracks)
+iou_only,static_jitter_px,0.832,px,centre RMS on near-static targets (2 tracks)
+iou_only,static_step_mean_px,0.446,px,mean frame-to-frame centre displacement on static targets
+iou_only,static_step_var_px2,0.082,px^2,variance of frame-to-frame centre displacement on static targets
+iou_only,center_error_px,0.0,px,mean |output center - detection center| on updated frames

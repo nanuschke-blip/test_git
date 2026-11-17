@@ -1,0 +1,12 @@
+# python
+__pycache__/
+*.pyc
+
+# regenerable big file
+results/iou_only.mp4
+
+# temporary inputs of the self-check / benchmark scripts
+results/synthetic_dets.json
+detections/_tagged_tmp.json
+detections/_occl_tmp.json
+detections/_sweep_tmp.json

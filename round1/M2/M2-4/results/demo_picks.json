@@ -1,0 +1,22 @@
+{
+ "demo_1_multitarget": {
+  "frame": 409,
+  "desc": "multi-target: 3 tracks alive"
+ },
+ "demo_2_crossing": {
+  "frame": 1291,
+  "desc": "two targets overlapping, IoU=0.91 (ID 1 / ID 8)"
+ },
+ "demo_3_occlusion": {
+  "frame": 1213,
+  "desc": "occluded: ID 6 predicted for 10 frames (dashed = PREDICTED, max_age=10)"
+ },
+ "demo_4_reentry": {
+  "frame": 1229,
+  "desc": "re-entry: old ID 6 lost, new ID 7 issued after 15 frames (ID never reused)"
+ },
+ "demo_5_static": {
+  "frame": 849,
+  "desc": "static target ID 2: 1700 frames (56.7 s), drift 11.1 px"
+ }
+}

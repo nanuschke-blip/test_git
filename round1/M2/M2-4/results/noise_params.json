@@ -1,0 +1,37 @@
+{
+ "R": [
+  0.136,
+  0.1002,
+  0.6678,
+  0.444
+ ],
+ "sigma_a": 0.141,
+ "sigma_size": 0.5,
+ "detail": {
+  "residual_var_raw": [
+   0.1088,
+   0.0802,
+   0.5342,
+   0.3552
+  ],
+  "accel_p50": 0.022,
+  "accel_p90": 0.141,
+  "accel_windows": 333,
+  "var_d2p": [
+   0.5495,
+   0.4353
+  ],
+  "sigma_a_second_diff_floor": 1.0,
+  "var_dw_dh": [
+   0.9575,
+   0.7142
+  ],
+  "q_size": [
+   0.25,
+   0.25
+  ],
+  "streams": 10,
+  "samples": 5038,
+  "ma_win": 5
+ }
+}
