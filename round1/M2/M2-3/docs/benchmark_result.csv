@@ -1,0 +1,8 @@
+stage,ms_per_frame,percent
+preprocess,7.272,25.1
+inference,21.11,73.0
+postprocess,0.544,1.9
+total,28.927,100.0
+fps,34.57,
+iters,200,
+input_size,1920x1080,

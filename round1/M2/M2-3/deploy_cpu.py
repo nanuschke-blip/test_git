@@ -1,36 +1,74 @@
-import cv2
-import numpy as np
-import onnxruntime as ort
+"""纯 ONNX Runtime 的 CPU 部署演示：完整预处理 + 推理 + NMS 后处理 + 画框 + FPS
+
+用法:
+    python deploy_cpu.py                    # 摄像头实时
+    python deploy_cpu.py --video xxx.mp4    # 对视频文件跑（按 q 退出）
+    python deploy_cpu.py --save out.mp4     # 顺便把结果存成视频
+"""
+import os
 import time
+import argparse
 
-# 1. 加载 ONNX 模型
-session = ort.InferenceSession("best.onnx", providers=['CPUExecutionProvider'])
-input_name = session.get_inputs()[0].name
+import cv2
 
-# 2. 预处理（极其关键，必须和训练时一致）
-def preprocess(img, input_shape=(640, 640)):
-    img = cv2.resize(img, input_shape)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = img.astype(np.float32) / 255.0
-    img = np.transpose(img, (2, 0, 1)) # HWC 转 CHW
-    img = np.expand_dims(img, axis=0)  # 加 batch 维度
-    return img
+from yolo_onnx import YoloOnnx
 
-cap = cv2.VideoCapture(0)
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret: break
-    
-    start_time = time.time()
-    
-    # 推理
-    input_tensor = preprocess(frame)
-    outputs = session.run(None, {input_name: input_tensor})
-    
-    # （注：这里为了模板简洁，省去了 NMS 后处理逻辑，你可以先用空列表代替画框演示）
-    
-    # 计算 FPS
-    fps = 1.0 / (time.time() - start_time)
-    cv2.putText(frame, f"FPS: {fps:.1f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    cv2.imshow("CPU Deploy", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'): break
+CLASSES = ["cup", "phone", "mouse", "bottle", "pen", "tissue"]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--model", default="models/best.onnx")
+    ap.add_argument("--video", default=None, help="不填则打开摄像头 0")
+    ap.add_argument("--save", default=None)
+    ap.add_argument("--conf", type=float, default=0.25)
+    args = ap.parse_args()
+
+    model = YoloOnnx(args.model, 640, conf=args.conf)
+    print(f"[deploy] {args.model} on {model.providers}")
+
+    cap = cv2.VideoCapture(args.video if args.video else 0)
+    if not cap.isOpened():
+        raise RuntimeError("打不开视频源")
+
+    writer = None
+    if args.save:
+        w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv2.CAP_PROP_FPS) or 30
+        writer = cv2.VideoWriter(args.save, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+
+    n, t_sum = 0, 0.0
+    while cap.isOpened():
+        ok, frame = cap.read()
+        if not ok:
+            break
+
+        t0 = time.perf_counter()
+        boxes, scores, ids = model.predict(frame)
+        t1 = time.perf_counter()
+        t_sum += t1 - t0
+        n += 1
+
+        model.draw(frame, boxes, scores, ids, CLASSES)
+        cv2.putText(frame, f"{1000.0 * (t1 - t0):.1f} ms  {1.0 / (t1 - t0 + 1e-9):.1f} FPS  "
+                           f"avg {1000.0 * t_sum / n:.1f} ms",
+                    (10, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+        if writer is not None:
+            writer.write(frame)
+        cv2.imshow("YOLOv8n ONNX Runtime (CPU) - press q to quit", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+
+    cap.release()
+    if writer is not None:
+        writer.release()
+        print(f"[deploy] saved -> {args.save}")
+    cv2.destroyAllWindows()
+    if n:
+        print(f"[deploy] {n} frames, avg {1000.0 * t_sum / n:.2f} ms/frame, "
+              f"{n / t_sum:.2f} FPS")
+
+
+if __name__ == "__main__":
+    main()

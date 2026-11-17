@@ -1,0 +1,25 @@
+{
+ "model": "models/best.onnx",
+ "imgsz": 640,
+ "input_size": [
+  1920,
+  1080
+ ],
+ "providers": [
+  "CPUExecutionProvider"
+ ],
+ "iters": 200,
+ "preprocess_ms": 7.272,
+ "inference_ms": 21.11,
+ "postprocess_ms": 0.544,
+ "total_ms": 28.927,
+ "total_std_ms": 2.113,
+ "total_min_ms": 26.237,
+ "total_max_ms": 51.346,
+ "fps": 34.57,
+ "pct": {
+  "preprocess": 25.1,
+  "inference": 73.0,
+  "postprocess": 1.9
+ }
+}

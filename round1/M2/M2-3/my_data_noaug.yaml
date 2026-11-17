@@ -1,0 +1,10 @@
+path: .
+train: data/splits/train_orig.txt
+val: data/splits/val.txt
+names:
+  0: cup
+  1: phone
+  2: mouse
+  3: bottle
+  4: pen
+  5: tissue

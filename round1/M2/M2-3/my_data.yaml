@@ -1,6 +1,7 @@
-path: . 
-train: data/images
-val: data/images
+path: .
+train: data/splits/train.txt
+val: data/splits/val.txt
+test: data/splits/test.txt
 names:
   0: cup
   1: phone

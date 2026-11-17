@@ -1,0 +1,10 @@
+# training artifacts (weights are kept in models/)
+runs/
+data/labels.cache
+
+# official pretrained weights (auto-downloaded by train.py)
+yolov8n.pt
+
+# python
+__pycache__/
+*.pyc

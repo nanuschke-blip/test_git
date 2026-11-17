@@ -1,0 +1,155 @@
+{
+ "conf": 0.25,
+ "iou_good": 0.75,
+ "by_type": {
+  "shift": 3,
+  "class_confusion": 2,
+  "false_pos": 2,
+  "miss": 4
+ },
+ "by_perturbation": {
+  "occlude": 7,
+  "overexpose": 3,
+  "blur_dark": 1
+ },
+ "total": 11,
+ "picked": [
+  {
+   "image": "bottle_08.jpg",
+   "perturb": "blur_dark",
+   "type": "miss",
+   "cls": 3,
+   "iou": 0.0,
+   "gt": [
+    385.99968000000007,
+    706.0003200000001,
+    1409.99904,
+    1034.00064
+   ],
+   "pred": null,
+   "reason": "\u538b\u6697\u5230 0.55 \u500d\u5e76\u9ad8\u65af\u6a21\u7cca\u540e\uff0c\u7070\u767d\u74f6\u4f53\u4e0e\u6728\u684c\u9762\u7684\u5bf9\u6bd4\u5ea6\u88ab\u62b9\u5e73\uff0c\u8fb9\u7f18\u54cd\u5e94\u6d88\u5931\uff0c\u6a21\u578b\u76f4\u63a5\u4e0d\u8f93\u51fa\u6846\uff08bottle \u539f\u56fe\u53ea\u6709 10 \u5f20\uff0c\u5f31\u5149\u6837\u672c\u66f4\u5c11\uff09\u3002"
+  },
+  {
+   "image": "bottle_08.jpg",
+   "perturb": "occlude",
+   "type": "miss",
+   "cls": 3,
+   "iou": 0.0,
+   "gt": [
+    385.99968000000007,
+    706.0003200000001,
+    1409.99904,
+    1034.00064
+   ],
+   "pred": null,
+   "reason": "\u7070\u5757\u76d6\u4f4f\u74f6\u4f53\u53f3\u4fa7\uff0c\u5269\u4e0b\u53ef\u89c1\u90e8\u5206\u592a\u7a84\uff0c\u6a21\u578b\u6ca1\u6709\u8f93\u51fa\u4efb\u4f55\u6846\uff1b\u8fd9\u4e00\u7c7b\u906e\u6321\u8d85\u8fc7\u7ea6 40% \u5c31\u6574\u4f53\u5931\u6548\u3002"
+  },
+  {
+   "image": "pen_04.jpg",
+   "perturb": "occlude",
+   "type": "miss",
+   "cls": 4,
+   "iou": 0.275,
+   "gt": [
+    516.00096,
+    544.00032,
+    1132.00032,
+    1062.00072
+   ],
+   "pred": null,
+   "reason": "\u7b14\u7684\u4e2d\u6bb5\u88ab\u7070\u5757\u6321\u4f4f\u3001\u53ea\u5269\u4e24\u7aef\u9732\u51fa\uff0c\u6a21\u578b\u7ed9\u51fa\u7684\u6846 IoU \u4ec5 0.275\uff08<0.3 \u89c6\u4e3a\u6f0f\u68c0\uff09\u3002\u7ec6\u957f\u76ee\u6807\u5bf9\u906e\u6321\u6700\u654f\u611f\uff0c\u56e0\u4e3a\u53ef\u7528\u7684\u5f62\u72b6\u7ebf\u7d22\u672c\u6765\u5c31\u5c11\u3002"
+  },
+  {
+   "image": "bottle_08.jpg",
+   "perturb": "overexpose",
+   "type": "miss",
+   "cls": 3,
+   "iou": 0.0,
+   "gt": [
+    385.99968000000007,
+    706.0003200000001,
+    1409.99904,
+    1034.00064
+   ],
+   "pred": null,
+   "reason": "\u8fc7\u66dd\u540e\u74f6\u4f53\u4e0e\u684c\u9762\u7684\u9ad8\u5149\u878d\u4e3a\u4e00\u4f53\u3001\u8fb9\u754c\u6d88\u5931\uff0c\u76f4\u63a5\u6f0f\u68c0\u2014\u2014\u8fd9\u6b63\u662f cup/bottle \u6613\u6df7\u5224\u65ad\u5728\u5f3a\u5149\u4e0b\u7684\u5177\u4f53\u8868\u73b0\u3002"
+  },
+  {
+   "image": "mouse_06.jpg",
+   "perturb": "occlude",
+   "type": "class_confusion",
+   "cls": 2,
+   "pred_cls": 1,
+   "iou": 0.665,
+   "gt": [
+    703.58208,
+    508.85982000000007,
+    1088.4230400000001,
+    787.01058
+   ],
+   "pred": [
+    695.0819702148438,
+    458.2618103027344,
+    1130.3216552734375,
+    828.063720703125
+   ],
+   "reason": "\u9f20\u6807\u88ab\u7070\u5757\u5207\u6389\u4e00\u534a\uff0c\u5269\u4e0b\u7684\u5706\u9876+\u4fa7\u8fb9\u5f62\u72b6\u66f4\u50cf\u624b\u673a\u7684\u5706\u89d2\u77e9\u5f62\uff1b\u4e24\u8005\u90fd\u662f\u6df1\u7070\u8272\uff0c\u989c\u8272\u7ebf\u7d22\u4e5f\u540c\u65f6\u5931\u6548\uff0c\u4e8e\u662f\u5224\u6210 phone\uff08IoU 0.665\uff09\u3002"
+  },
+  {
+   "image": "phone_02.jpg",
+   "perturb": "overexpose",
+   "type": "class_confusion",
+   "cls": 1,
+   "pred_cls": 0,
+   "iou": 0.804,
+   "gt": [
+    681.5308799999999,
+    546.69654,
+    1589.57184,
+    1054.90026
+   ],
+   "pred": [
+    669.027099609375,
+    458.7876281738281,
+    1586.059326171875,
+    1080.0
+   ],
+   "reason": "\u624b\u673a\u5c4f\u5e55\u5927\u9762\u79ef\u53cd\u5149\u8fc7\u66dd\u6210\u767d\u8272\u9ad8\u5149\u5757\uff0c\u5f62\u72b6\u63a5\u8fd1\u676f\u53e3/\u676f\u8eab\u7684\u767d\u8272\u533a\u57df\uff0c\u88ab\u5224\u6210 cup\uff08IoU 0.804\uff0c\u4f4d\u7f6e\u5bf9\u3001\u7c7b\u522b\u9519\uff09\u3002"
+  },
+  {
+   "image": "mouse_06.jpg",
+   "perturb": "overexpose",
+   "type": "false_pos",
+   "cls": 4,
+   "conf": 0.269,
+   "gt": null,
+   "pred": [
+    0.0,
+    76.52471923828125,
+    266.55596923828125,
+    591.54296875
+   ],
+   "reason": "\u8fc7\u66dd\u628a\u80cc\u666f\u767d\u5899/\u95e8\u6846\u7684\u9ad8\u5149\u6761\u8bef\u68c0\u6210 pen\uff08\u7f6e\u4fe1\u5ea6\u4ec5 0.27\uff09\u2014\u2014pen \u7c7b\u5bf9\"\u7ec6\u957f\u9ad8\u5149\"\u654f\u611f\uff0c\u662f\u80cc\u666f\u8bef\u68c0\u7684\u4e3b\u8981\u6765\u6e90\u3002"
+  },
+  {
+   "image": "cup_08.jpg",
+   "perturb": "occlude",
+   "type": "shift",
+   "cls": 0,
+   "iou": 0.633,
+   "gt": [
+    736.47264,
+    274.81248,
+    1300.4976,
+    887.69952
+   ],
+   "pred": [
+    690.6793212890625,
+    195.37298583984375,
+    1400.236572265625,
+    964.5513305664062
+   ],
+   "reason": "\u676f\u5b50\u53f3\u4fa7\u88ab\u7070\u5757\u906e\u6321\uff0c\u6846\u53ea\u8986\u76d6\u53ef\u89c1\u7684\u5de6\u4fa7\u90e8\u5206\uff0cIoU 0.633 \u4f4e\u4e8e\u8d34\u5408\u9608\u503c 0.75\u3002\u8fd9\u7c7b\"\u6846\u504f\u79fb\"\u6b63\u662f mAP@0.5:0.95 \u6389\u5206\u7684\u4e3b\u56e0\uff08mAP@0.5 \u4ecd\u7b97\u547d\u4e2d\uff09\u3002"
+  }
+ ]
+}

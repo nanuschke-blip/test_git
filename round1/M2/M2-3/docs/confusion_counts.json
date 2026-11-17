@@ -1,0 +1,70 @@
+{
+ "images": 17,
+ "conf": 0.25,
+ "iou_match": 0.5,
+ "matrix": {
+  "cup": {
+   "cup": 3,
+   "phone": 0,
+   "mouse": 0,
+   "bottle": 0,
+   "pen": 0,
+   "tissue": 0,
+   "background": 0
+  },
+  "phone": {
+   "cup": 0,
+   "phone": 3,
+   "mouse": 0,
+   "bottle": 0,
+   "pen": 0,
+   "tissue": 0,
+   "background": 0
+  },
+  "mouse": {
+   "cup": 0,
+   "phone": 0,
+   "mouse": 2,
+   "bottle": 0,
+   "pen": 0,
+   "tissue": 0,
+   "background": 0
+  },
+  "bottle": {
+   "cup": 0,
+   "phone": 0,
+   "mouse": 0,
+   "bottle": 2,
+   "pen": 0,
+   "tissue": 0,
+   "background": 1
+  },
+  "pen": {
+   "cup": 0,
+   "phone": 0,
+   "mouse": 0,
+   "bottle": 0,
+   "pen": 3,
+   "tissue": 0,
+   "background": 0
+  },
+  "tissue": {
+   "cup": 0,
+   "phone": 0,
+   "mouse": 0,
+   "bottle": 0,
+   "pen": 0,
+   "tissue": 3,
+   "background": 0
+  },
+  "background": {
+   "cup": 0,
+   "phone": 0,
+   "mouse": 0,
+   "bottle": 0,
+   "pen": 0,
+   "tissue": 0,
+   "background": 0
+  }
+ }
+}
