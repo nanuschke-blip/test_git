@@ -1,0 +1,8 @@
+# ROS 2 / Python
+__pycache__/
+*.pyc
+
+# colcon 构建产物（可由 colcon build 重新生成）
+build/
+install/
+log/
