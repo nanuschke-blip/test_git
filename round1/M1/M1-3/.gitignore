@@ -1,0 +1,16 @@
+# ROS 2 / Python
+__pycache__/
+*.pyc
+
+# colcon 构建产物
+build/
+install/
+log/
+
+# 生成的 bag 很大（约 2.5 MB/帧），不进仓库
+sample_bag/
+*.mcap
+*.db3
+sample_bag_nd/
+extrinsics_nd.yaml
+out_nondefault/

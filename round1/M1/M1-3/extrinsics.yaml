@@ -1,0 +1,21 @@
+laser_link:
+  parent: base_link
+  xyz:
+  - 0.15
+  - 0.0
+  - 0.2
+camera_link:
+  parent: base_link
+  xyz:
+  - 0.1
+  - 0.0
+  - 0.3
+  rpy:
+  - 0.0
+  - 0.0
+  - 0.0
+camera_intrinsics:
+  fx: 500.0
+  fy: 500.0
+  cx: 320.0
+  cy: 240.0
