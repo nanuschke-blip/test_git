@@ -113,6 +113,8 @@ def main():
     ap.add_argument("--source", required=True, help="视频文件或图片目录")
     ap.add_argument("--ann", required=True, help="人工标注 labels.csv")
     ap.add_argument("--out", default="eval.csv")
+    ap.add_argument("--roi", type=float, default=1.0,
+                    help="只看画面上方 roi 比例（0~1）；屏幕录制建议 0.7 去掉任务栏")
     ap.add_argument("--stride", type=int, default=1, help="视频抽帧步长（与标注一致）")
     args = ap.parse_args()
 
@@ -129,7 +131,10 @@ def main():
         if key not in frames:
             print(f"[eval] 跳过（源里没有这一帧）: {key}")
             continue
-        st, cx, cy, area, r = analyze(frames[key])
+        _img = frames[key]
+        if args.roi < 1.0:
+            _img = _img[:int(_img.shape[0] * args.roi)]
+        st, cx, cy, area, r = analyze(_img)
         ok = (st == lb["state"])
         conf[(lb["state"], st)] += 1
         if lb["state"] != "none" and st == "none":

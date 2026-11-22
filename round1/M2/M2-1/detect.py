@@ -109,10 +109,13 @@ def main():
     parser.add_argument("-v", "--video", help="Input video path")
     parser.add_argument("-c", "--calib", required=True, help="Calibration yaml path")
     parser.add_argument("-s", "--show", action="store_true", help="Show window")
+    parser.add_argument("--roi", type=float, default=1.0,
+                        help="只看画面上方 roi 比例（0~1），屏幕录制建议 0.7")
     parser.add_argument("--print", dest="print_det", action="store_true",
                         help="打印亮灯中心坐标与面积")
     args = parser.parse_args()
     globals()["PRINT_DETECTIONS"] = args.print_det
+    globals()["ROI_FRAC"] = args.roi
 
     load_calibration(args.calib)
     print(f"Calibration loaded: {args.calib}")
