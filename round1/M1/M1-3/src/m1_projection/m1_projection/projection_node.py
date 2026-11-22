@@ -6,6 +6,7 @@ import numpy as np
 import yaml
 
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 
 from geometry_msgs.msg import TransformStamped
@@ -214,12 +215,19 @@ def main(args=None):
     node = ProjectionNode()
     try:
         rclpy.spin(node)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
-        node.get_logger().info(f'共配对 {node.n_pairs} 帧，保存 {node.n_saved} 张图')
+        try:
+            node.get_logger().info(f'共配对 {node.n_pairs} 帧，保存 {node.n_saved} 张图')
+        except Exception:                           # noqa: BLE001
+            pass
         node.destroy_node()
-        rclpy.shutdown()
+        try:
+            if rclpy.ok():
+                rclpy.shutdown()
+        except Exception:                           # noqa: BLE001
+            pass
 
 
 if __name__ == '__main__':

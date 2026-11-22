@@ -197,3 +197,25 @@ ros2 run tf2_ros tf2_echo base_link camera_link
 
 **Q5：`projection_node` 起不来，报 extrinsics 不存在？**
 `extrinsics_file` 默认是相对路径，先 `cd` 到该文件所在目录，或传绝对路径。
+
+### 与官方 make_bag.py 的兼容性（已验证）
+
+本仓库的 `make_bag.py` 是自己写的；考核提供的是官方版本。两者**字段与话题完全一致**，
+官方额外支持 `--camera-pitch-deg`（相机俯仰）。已用官方脚本生成非默认外参的 bag 实测：
+
+```bash
+# 官方 make_bag.py 的现场命令（考官可能这么用）
+python3 make_bag.py --frames 20 --laser-z 0.35 --camera-z 0.55 \
+    --camera-pitch-deg 10 --fx 420 --out bag_off --extrinsics extr_off.yaml
+
+ros2 bag play bag_off --clock
+ros2 run m1_projection projection_node --ros-args -p use_sim_time:=true \
+    -p extrinsics_file:=extr_off.yaml
+```
+
+实测结果：节点正确读到 `laser z=0.35 / camera z=0.55 / rpy_y=0.1745(10°) / fx=420`，
+每帧投影 **76 个点**，20 帧配满，无报错。
+
+兼容要点：官方图像是 **640×480 rgb8**（我们用 `img.width/height` 自适应）、
+`extrinsics.yaml` 多了 `frames/scan/camera` 段（额外字段不影响解析）、
+时间戳从 0 开始（use_sim_time 跟随 `/clock` 即可）。
