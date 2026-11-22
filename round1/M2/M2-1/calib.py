@@ -20,7 +20,7 @@ def calibrate(images_path, output_file, square_size):
     # 读取所有 jpg 和 png 图片
     images = glob.glob(os.path.join(images_path, "*.jpg")) + glob.glob(os.path.join(images_path, "*.png"))
     if not images:
-        print("❌ 错误：文件夹中没有找到图片，请检查路径！")
+        print("[FAIL] 错误：文件夹中没有找到图片，请检查路径！")
         return
 
     print(f"找到 {len(images)} 张图片，开始处理...")
@@ -52,12 +52,12 @@ def calibrate(images_path, output_file, square_size):
             cv2.waitKey(300) # 显示 300ms
             success_count += 1
         else:
-            print(f"⚠️ 未能在 {os.path.basename(fname)} 中找到角点，已跳过。")
+            print(f"[WARN] 未能在 {os.path.basename(fname)} 中找到角点，已跳过。")
 
     cv2.destroyAllWindows()
 
     if success_count == 0:
-        print("❌ 错误：所有图片都未能识别出角点，请重新拍摄！")
+        print("[FAIL] 错误：所有图片都未能识别出角点，请重新拍摄！")
         return
 
     # 开始标定计算
@@ -79,8 +79,8 @@ def calibrate(images_path, output_file, square_size):
         total_error += error
     mean_error = total_error / len(objpoints)
 
-    print(f"\n✅ 标定完成！")
-    print(f"🎯 重投影误差 (RMSE): {mean_error:.4f} px")
+    print(f"\n[OK] 标定完成！")
+    print(f" 重投影误差 (RMSE): {mean_error:.4f} px")
 
     # 严格按照任务书 §4.2 格式保存 YAML
     calib_data = {
@@ -109,7 +109,7 @@ def calibrate(images_path, output_file, square_size):
     # 保存文件
     with open(output_file, 'w', encoding='utf-8') as f:
         yaml.dump(calib_data, f, sort_keys=False, default_flow_style=False)
-    print(f"💾 内参已成功保存至: {output_file}")
+    print(f" 内参已成功保存至: {output_file}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="OpenCV 相机标定脚本")
