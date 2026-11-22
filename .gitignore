@@ -1,1 +1,7 @@
-output_result.jpgnoutput_pose.jpgn
+# 运行输出（可重新生成，不进仓库）
+output_result.jpg
+output_pose.jpg
+
+# Python
+__pycache__/
+*.pyc
