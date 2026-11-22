@@ -26,7 +26,7 @@ class SensorPublisher(Node):
         self.t += 0.1
         base = 0.60 + 0.45 * math.sin(2.0 * math.pi * self.t / self.period)
 
-        if random.random() < 0.10:
+        if random.random() < 0.05:
             msg.status = 1
             msg.distance = 9.99          # 超量程假数据（节点B 会滤掉）
         else:
