@@ -98,6 +98,8 @@ def process_frame(frame, mtx, dist, board_size, square_size, use_distortion=True
             distance = tvec[2][0] # Z轴距离，单位米
             text = f"[Dist: {distance:.2f}m, Yaw: {euler_angles[1]:+.1f}, Pitch: {euler_angles[0]:+.1f}]"
             cv2.putText(frame, text, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            if globals().get("PRINT_POSE", False):
+                print(f"[pose] dist={distance:.3f}m yaw={euler_angles[1]:+.1f} pitch={euler_angles[0]:+.1f}")
             
             # 画角点连接线
             cv2.drawChessboardCorners(frame, board_size, corners2, ret)
@@ -112,7 +114,12 @@ def main():
     parser.add_argument("-s", "--show", action="store_true", help="显示画面")
     # 用于测试不带畸变系数的情况
     parser.add_argument("--no-dist", action="store_true", help="不使用畸变系数测试")
+    parser.add_argument("--square-size", type=float, default=24.0,
+                        help="棋盘格方格边长 (mm)，现场可改（如 80）")
+    parser.add_argument("--print", dest="print_pose", action="store_true",
+                        help="打印距离/偏航/俯仰")
     args = parser.parse_args()
+    globals()["PRINT_POSE"] = args.print_pose
 
     mtx, dist = load_calibration(args.calib)
     print(f"Loaded calibration from {args.calib}")
@@ -120,6 +127,7 @@ def main():
     # 靶标参数 (9x6 内角点，24.0mm 边长)
     board_size = (9, 6)
     square_size = 24.0 / 1000.0 # 转换为米
+    square_size = args.square_size / 1000.0  # 由 --square-size 传入，默认 24.0 mm
     
     use_dist = not args.no_dist
 

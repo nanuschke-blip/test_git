@@ -45,3 +45,14 @@ M2-2/
 ├── marker/                  # 靶标原图与实测物理尺寸说明
 └── results/                 # 坐标轴可视化截图（≥3个不同姿态）
 
+### 现场补充：改靶标边长 / 打印位姿
+
+```bash
+# 现场指定边长（例如考官说用 80 mm 的靶标）
+python3 pose_estimate.py -i results/axis_2_front.png -c camera_calibration.yaml \
+    --square-size 80 --print
+# [pose] dist=1.667m yaw=+0.0 pitch=+0.0     (24mm 时约 0.50m，比例 80/24≈3.33)
+
+# 打印距离/偏航/俯仰
+python3 pose_estimate.py -i results/axis_1_left.png -c camera_calibration.yaml --print
+```

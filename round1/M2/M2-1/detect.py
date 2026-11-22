@@ -70,6 +70,12 @@ def process_frame(frame):
             (x, y), radius = cv2.minEnclosingCircle(best_cnt)
             center = (int(x), int(y))
             radius = int(radius)
+            cv2.putText(result_frame, f"({center[0]},{center[1]}) A={max_area:.0f}",
+                        (center[0] - 60, center[1] + radius + 22),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, bgr_color, 2)
+            if globals().get("PRINT_DETECTIONS", False):
+                print(f"[detect] {color_name}: center=({center[0]}, {center[1]}) "
+                      f"area={max_area:.0f}px radius={radius}px")
             
             # 画圆
             cv2.circle(result_frame, center, radius, bgr_color, 2)
@@ -103,7 +109,10 @@ def main():
     parser.add_argument("-v", "--video", help="Input video path")
     parser.add_argument("-c", "--calib", required=True, help="Calibration yaml path")
     parser.add_argument("-s", "--show", action="store_true", help="Show window")
+    parser.add_argument("--print", dest="print_det", action="store_true",
+                        help="打印亮灯中心坐标与面积")
     args = parser.parse_args()
+    globals()["PRINT_DETECTIONS"] = args.print_det
 
     load_calibration(args.calib)
     print(f"Calibration loaded: {args.calib}")
