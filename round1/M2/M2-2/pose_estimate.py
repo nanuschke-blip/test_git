@@ -142,22 +142,30 @@ def main():
         cv2.imwrite("output_pose.jpg", result)
 
     else:
-        # 默认摄像头
-        cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
-        
+        # 视频文件或摄像头：-v 给视频就用视频，否则开摄像头 0
+        src = args.video if args.video else 0
+        if isinstance(src, str):
+            print(f"[pose] 视频源: {src}")
+        cap = cv2.VideoCapture(src)
+        if not cap.isOpened():
+            print(f"Error: 打不开视频源 {src}（现场没有摄像头时请用 -v 传视频）")
+            return
+        if not args.video:
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+
         while cap.isOpened():
             ret, frame = cap.read()
-            if not ret: break
-            
+            if not ret:
+                break
             result = process_frame(frame, mtx, dist, board_size, square_size, use_dist)
-            cv2.imshow("Pose Estimation", result)
-            
-            if cv2.waitKey(1) & 0xFF == ord('q'): break
-            
+            if args.show:
+                cv2.imshow("Pose Estimation", result)
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
         cap.release()
-        cv2.destroyAllWindows()
+        if args.show:
+            cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
