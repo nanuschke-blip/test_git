@@ -130,3 +130,16 @@ YAML 的 key 没写 `/**/`，或者 `setup.py` 里没把 `params/*.yaml` 装进 
 **Q4：为什么 `namespace` 给非 `robot1` 的值就只起一组？**
 这是为了让 `ros2 launch ... namespace:=my_robot` 这种"改命名空间"的用法只产出一组，
 而不是把 `my_robot` 和 `robot2` 混着起。需要两组时用默认命令或 `dual:=true`。
+
+### 参数文件（与官方示例对齐）
+
+| 文件 | alpha | alarm_threshold | 说明 |
+|---|---|---|---|
+| `params_robot1.yaml` | 0.3 | 0.3 | 第一组 |
+| `params_robot2.yaml` | **0.6** | **0.5** | 第二组：更灵敏 + 阈值更高 |
+
+两份文件都包含 `/**` 全局块（`use_sim_time: false`）与 `/**/node_b_filter`、`/**/node_c_alarm`
+通配节点段，所以同一份文件在任何命名空间下都生效。
+
+> 默认命令 `ros2 launch m1_launch bringup.launch.py` **同时启动两组**（对应验收第 1 条）；
+> 只起一组用 `dual:=false namespace:=robot1`，需要自定义参数文件时加 `params_file:=...`。

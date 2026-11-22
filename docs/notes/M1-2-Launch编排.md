@@ -233,3 +233,24 @@ ros2 launch m1_launch bringup.launch.py params_file:=/nope.yaml   # 一行错误
 - **条件启动**：`IfCondition` / `UnlessCondition` 配合 `ros2 launch ... simulate:=true`；
 - **生命周期节点（LifecycleNode）**：用 launch 的 `LifecycleTransition` 做 configure→activate；
 - **测试化**：`launch_testing` 写自动化验收（起 launch → 断言节点/话题存在 → 退出）。
+
+## 0.9 修订（按官方示例对齐，2026-11-22）
+
+官方给的两份参考 yaml 与实现有两处差异，已修正：
+
+1. 两份文件都应有 `/**` 全局块：`ros__parameters: use_sim_time: false`；
+2. **robot2 的 alpha 是 0.6**（"比 robot1 更灵敏"），不是 0.3。
+
+现场验收实测（`colcon build` 后一条命令起两组）：
+
+| 验收项 | 实测 |
+|---|---|
+| `ros2 node list` | `/robot1/*` 与 `/robot2/*` 共 **6 个** ✅ |
+| `ros2 param get /robot1/node_b_filter alpha` | **0.3** |
+| `ros2 param get /robot2/node_b_filter alpha` | **0.6** |
+| `ros2 param get /robot1/node_c_alarm alarm_threshold` | **0.3** |
+| `ros2 param get /robot2/node_c_alarm alarm_threshold` | **0.5** |
+| `ros2 topic list` | `/robot1/sensor_data`、`/robot2/sensor_data` 隔离 ✅ |
+| `params_file:=/nope.yaml` | `[M1-2][ERROR] 参数文件不存在: /nope.yaml`，无 traceback ✅ |
+
+**现场命令以"同时起两组"为默认**（官方验收第 1 条就是这个），要单组才加 `dual:=false`。
