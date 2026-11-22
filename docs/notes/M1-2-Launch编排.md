@@ -1,5 +1,54 @@
 # M1-2 Launch 编排 —— 流程 / 原理 / 知识点 / 算法
 
+## 0.4 官方要求对照（2026-11 版考核方案）
+
+| 官方要求 | 实现 | 状态 |
+|---|---|---|
+| Python 格式 launch，一键启动 3 节点 | `bringup.launch.py`（OpaqueFunction） | ✅ |
+| 支持 `namespace:=my_robot`，全部节点同命名空间 | 每个 Node 带 `namespace=...` | ✅ |
+| 节点名显式指定 | `node_a_sensor` / `node_b_filter` / `node_c_alarm` | ✅ |
+| 滤波参数与报警阈值来自 YAML；`params_file:=` 可配 | `/**/node_*` 通配 key + 两套 yaml | ⚠️ 参数名是 `alpha`（见风险 1） |
+| 演示参数覆盖：robot1 0.3 / robot2 0.5 | 两套 params + 命名空间 | ✅ |
+| 同一个 launch 起两组、话题自动隔离 | `dual:=true` 或跑两次单组 | ✅ |
+| 节点 C 在 B 完全启动后才起 | `OnProcessStart` + `TimerAction(1.0)` | ✅ |
+| YAML 不存在时给清晰错误、无 Python 栈 | stderr 一行 + `EmitEvent(Shutdown)` | ✅ |
+
+## 0.5 现场演示卡（4 分钟）——**注意用单组模式**
+
+官方展示指南是"一条命令起 robot1，再起 robot2"，所以：
+
+```bash
+# 第 1 步：只起 robot1（3 个节点）
+ros2 launch m1_launch bringup.launch.py dual:=false namespace:=robot1
+# 第 2 步：再起 robot2
+ros2 launch m1_launch bringup.launch.py dual:=false namespace:=robot2
+
+ros2 param get /robot1/node_c_alarm alarm_threshold    # 0.3
+ros2 param get /robot2/node_c_alarm alarm_threshold    # 0.5
+ros2 topic list | grep sensor_data                     # 两组隔离
+ros2 launch m1_launch bringup.launch.py params_file:=/nope.yaml   # 一行错误
+ros2 param set /robot1/node_b_filter alpha 0.9         # 另一组不受影响
+```
+
+> ⚠️ **不要**在这里直接 `ros2 launch m1_launch bringup.launch.py`：默认 `dual:=true`，
+> 会一次起 6 个节点；考官若再说"再起 robot2"，就会重复。
+
+## 0.6 两个必须提前想好的口径
+
+**风险 1：官方 M1-2 写的是"滤波窗口大小"，而我们用的是 `alpha`。**
+答：「M1-1 的契约把滤波定义为 `y=αx+(1−α)y_{k-1}`，一阶 IIR 没有"窗口"概念；
+`alpha` 就是它的唯一参数，并且满足"运行时 ros2 param set 生效"。如果按滑动平均实现，
+才需要 window 参数——两者时间常数可以等价换算（τ = Δt·(1−α)/α）。」
+
+**风险 2：默认双组 vs 指南分两次起。**
+答：两种都支持——`dual:=true` 一次起两组；`dual:=false` 单组（现场按指南用这个）。
+
+## 0.7 AI 使用说明（铁律 1）
+
+使用范围：文档措辞、launch 脚手架、报错检索；`bringup.launch.py` 的校验/事件逻辑逐行核对，
+并在本机跑过两轮（6 节点、缺文件报错）；命名空间与参数结论来自本机实测。
+
+
 > 对应 `round1/M1/M1-2`。目标：把 M1-1 的"三个终端三条 `ros2 run`"变成一条 `ros2 launch`，
 > 并让两组机器人（robot1 / robot2）同时运行、话题与服务自动隔离、参数来自 YAML、
 > 节点 C 在节点 B 之后启动、参数文件缺失时给可读错误。
