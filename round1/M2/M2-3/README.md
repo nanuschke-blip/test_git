@@ -123,3 +123,17 @@ python deploy_cpu.py --video ..\M2-4\videos\my_scene.mp4
 干净 val/test 上模型几乎全对（17 个实例只有 1 个漏检），只贴 1 张失败图说明不了问题。按现场
 真实退化（过曝/遮挡/模糊）构造样本后，18 次试验出 11 次失败，才能说清"模型为什么在这类
 样本上翻车"。逐张原因见 `docs/eval.md` 第 4 节。
+
+## 演示视频（现场用）
+
+`demo/demo.mp4`：84.7 s、4 类物料（cup / pen / phone / tissue）+ 中途手部遮挡段，
+画面左上角叠加「单帧耗时 / 瞬时 FPS / 平均耗时」。
+
+生成方式（headless，不需要显示器；与 `deploy_cpu.py` 共用同一套预处理 / 推理 / NMS / 画框）：
+
+```bash
+python tools/make_demo.py --video ../M2-4/videos/my_scene.mp4 --save demo/demo.mp4
+```
+
+实测：2541 帧，平均 31.7 ms/帧 ≈ 31.5 FPS；类别统计
+`{cup: 1990, pen: 1878, phone: 1009, tissue: 524, mouse: 1}`。
