@@ -109,3 +109,29 @@ python3 detect.py -i results/normal.png -c camera_calibration.yaml --print
 ```
 
 画面上同时叠加 `(cx,cy) A=<面积>`，满足题面"输出中心坐标和面积"的要求。
+
+## 评测（eval.py）与标注（label_tool_eval.py）
+
+评测流程：人工标注 → 跑检测 → 出 `eval.csv` + 摘要表（状态准确率、混淆矩阵、中心误差 P50/P95、漏检/误检）。
+
+```bash
+# 1) 标注：视频每 20 帧取一帧，鼠标点灯中心，按 1/2/3 选颜色；0=这一帧没灯；n=跳过；b=上一帧
+python3 label_tool_eval.py --source videos/test.mp4 --stride 20 --ann labels.csv
+
+# 2) 评测（与标注用同样的 stride）
+python3 eval.py --source videos/test.mp4 --stride 20 --ann labels.csv --out eval.csv
+```
+
+`labels.csv` 格式：
+
+```csv
+key,state,cx,cy
+0,Red,1389,816
+20,none,,
+```
+
+说明：
+- 阈值与 `detect.py` 完全一致（红 H 0–10/170–180、S≥120、V≥70；黄 H 20–35、S≥100、V≥100；
+  绿 H 40–90、S≥70、V≥70；面积 100~50000），改动时两处一起改；
+- 中心误差只统计"真值有坐标且检测到了"的帧；`none` 帧不参与中心误差；
+- 样本量很小（几十帧）时 P95 只作参考，报告里要注明 n。
